@@ -48,6 +48,7 @@ class User(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_verified = models.BooleanField(default=False)
+    otp = models.CharField(max_length=6,null=True,blank=True)
 
     objects = UserManager()
 
