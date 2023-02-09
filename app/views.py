@@ -1,8 +1,9 @@
+import datetime
 from django.shortcuts import render
 import logging
 from rest_framework.generics import GenericAPIView
-from app.models import User
-from app.serializers import UserSerializer,CustomTokenObtainPairSerializer, verifyAccountSerializer
+from app.models import Blog, User
+from app.serializers import BlogSerializer, UserSerializer,CustomTokenObtainPairSerializer, verifyAccountSerializer
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework.response import Response
 from django.utils.encoding import force_bytes
@@ -10,6 +11,7 @@ from rest_framework import status, serializers, generics
 from app.renderers import UserRenderer
 from django.contrib.auth import authenticate
 from .utils import send_otp_via_mail
+from rest_framework.permissions import IsAuthenticated
 
 logger = logging.getLogger('django')
 # Create your views here.
@@ -99,3 +101,81 @@ class VerifyOTP(GenericAPIView):
                     'message' : 'Failed',
                     'data' : serializer.errors,
                 })  
+
+class BlogView(GenericAPIView):
+    renderer_classes = (UserRenderer,)
+    permission_classes = [IsAuthenticated]
+    serializer_class = BlogSerializer
+
+    def post(self, request,username, format=None):
+        '''
+        This method is used to register the user.
+        '''
+        try:
+            user = request.user
+            data = request.data
+            user_blogs =Blog.objects.filter(user=self.request.user).values_list('blog_title',flat=True)
+            blog_title = request.data.get('blog_title')
+            is_published = request.data.get('is_published')
+            if blog_title:
+                if blog_title in user_blogs:
+                    return Response({'msg': 'Blog name already exist'}, status=status.HTTP_403_FORBIDDEN)
+                if is_published == 'Yes':
+                    data['published_at'] = datetime.datetime.now()
+                serializer = self.serializer_class(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save(user=user)
+                return Response({'msg': 'Blog created'},
+                                status=status.HTTP_201_CREATED)
+            else:
+                return Response({'msg': 'Blog title required'},
+                                status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(e)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def get(self, request, username, formate= None):
+        try:
+            blogs= Blog.objects.filter(user = request.user)
+            serializer = self.serializer_class(blogs, many=True)
+            return Response(serializer.data,
+                            status=status.HTTP_200_OK) 
+        except Exception as e:
+            logger.error(e)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    def put(self, request,username,blog_id, format=None):
+        '''
+        This method is used to register the user.
+        '''
+        try:
+            # import pdb; pdb.set_trace()
+            user = request.user
+            user_blogs =Blog.objects.get(id=blog_id)
+            serializer = BlogSerializer(user_blogs, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=user)
+            return Response({'msg': 'Blog Updated'},
+                            status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(e)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    def delete(self, request,username,blog_id, format=None):
+        if Blog.objects.filter(id=blog_id).exists():
+            Blog.objects.get(id=blog_id).delete()
+        else:
+            raise serializers.ValidationError(
+                "The Bank Account does not exist, Kindly make a POST request to create the Bank Account")
+
+        return Response({"Result": "Blog Deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+class PublishedBlogs(GenericAPIView):
+    renderer_classes = (UserRenderer,)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = BlogSerializer
+
+    def get(self, request, format=None):
+        blogs = Blog.objects.filter(is_published='Yes')
+        serializer = self.serializer_class(blogs, many=True, context={'user': request.user})
+        return Response(serializer.data, status=status.HTTP_200_OK)

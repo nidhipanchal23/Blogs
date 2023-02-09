@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app.models import User
+from app.models import User,Blog
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -22,3 +22,6 @@ class UserModelAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 admin.site.register(User, UserModelAdmin)
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ("published_at", "updated_at", "created_at", "is_published", "publish_choices", "blog_content", "blog_image", "blog_title", "user")

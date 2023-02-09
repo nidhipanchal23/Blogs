@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from app.models import User
+from app.models import Blog, User
 import re, logging
 
 logger = logging.getLogger('django')
@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'password',]
+        fields = ['email', 'first_name', 'last_name', 'password','username']
 
     def create_user_from_link(context):
         token = context.get('payload')
@@ -80,3 +80,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class verifyAccountSerializer(serializers.Serializer):
     email = serializers.EmailField()
     otp = serializers.CharField()
+
+
+class BlogSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="User.email", read_only=True)
+    class Meta:
+        model = Blog
+        fields = "__all__"
+        read_only_fields = ["user"]
+    

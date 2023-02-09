@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -81,7 +82,7 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'blogappdb', 
+        'NAME': 'blogsdb', 
         'USER': 'postgres', 
         'PASSWORD': 'root',
         'HOST': '127.0.0.1', 
@@ -151,7 +152,6 @@ SIMPLE_JWT = {
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 
     'JTI_CLAIM': 'jti',
-
 }
 
 # JWT Configuration
@@ -175,3 +175,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'anushka.codetrade@gmail.com'
 EMAIL_HOST_PASSWORD = 'dtnwixddjmklhyjg'
 EMAIL_USE_TLS = True
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
+
+MEDIA_URL = '/files/'
