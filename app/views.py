@@ -107,7 +107,7 @@ class BlogView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BlogSerializer
 
-    def post(self, request,username, format=None):
+    def post(self, request, format=None):
         '''
         This method is used to register the user.
         '''
@@ -134,7 +134,7 @@ class BlogView(GenericAPIView):
             logger.error(e)
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def get(self, request, username, formate= None):
+    def get(self, request, formate= None):
         try:
             blogs= Blog.objects.filter(user = request.user)
             serializer = self.serializer_class(blogs, many=True)
@@ -144,7 +144,7 @@ class BlogView(GenericAPIView):
             logger.error(e)
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    def put(self, request,username,blog_id, format=None):
+    def put(self, request,blog_id, format=None):
         '''
         This method is used to register the user.
         '''
@@ -161,18 +161,18 @@ class BlogView(GenericAPIView):
             logger.error(e)
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    def delete(self, request,username,blog_id, format=None):
+    def delete(self, request,blog_id, format=None):
         if Blog.objects.filter(id=blog_id).exists():
             Blog.objects.get(id=blog_id).delete()
         else:
             raise serializers.ValidationError(
-                "The Bank Account does not exist, Kindly make a POST request to create the Bank Account")
+                "The Blog does not exist, Kindly make a POST request to create the Blog")
 
         return Response({"Result": "Blog Deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 class PublishedBlogs(GenericAPIView):
     renderer_classes = (UserRenderer,)
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = BlogSerializer
 
     def get(self, request, format=None):
