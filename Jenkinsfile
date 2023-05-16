@@ -10,8 +10,11 @@ pipeline {
         }
          stage('Install Dependencies') {
             steps {
-//                 sh 'pip install -r requirements.txt'
-                sh 'virtualenv venv && . venv/bin/activate && pip install -r requirements.txt && python tests.py'
+//                sh 'apt-get update && apt-get install -y python3-pip'
+                sh 'pip3 install pipenv'
+
+                // Install project dependencies
+                sh 'pipenv install --deploy --system'
                 }
          }
     }
