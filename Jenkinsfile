@@ -17,7 +17,7 @@ pipeline {
          }
         stage('run') {
             steps {
-                sh '. venv/bin/activate && cd Blogs && python manage.py runserver'
+                sh '. venv/bin/activate && cd Blogs/blog && python manage.py runserver'
                 }
          }
         
