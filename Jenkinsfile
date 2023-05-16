@@ -15,6 +15,13 @@ pipeline {
                 sh '/var/lib/jenkins/workspace/hubstaff3/venv/bin/pip3 install -r requirements.txt'
                 }
          }
+        stage('Install Dependencies') {
+            steps {
+                sh 'python3 manage.py makemigrations'
+                sh 'python3 manage.py migrate'
+                sh 'python3 manage.py runserver'
+                }
+         }
         
     }
 }
