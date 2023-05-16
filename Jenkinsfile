@@ -12,12 +12,12 @@ pipeline {
             steps {
                 sh 'python3 -m venv venv'
                 sh '. venv/bin/activate'
-                sh '/var/lib/jenkins/workspace/hubstaff3/venv/bin/pip3 install -r requirements.txt'
+                sh '/var/lib/jenkins/workspace/hubstaff4/venv/bin/pip3 install -r requirements.txt'
                 }
          }
         stage('run') {
             steps {
-                sh '. venv/bin/activate && cd Blogs/blog && python manage.py runserver'
+                sh '. venv/bin/activate && cd hubstaff4 && python manage.py runserver'
                 }
          }
         
