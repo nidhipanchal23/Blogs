@@ -17,7 +17,7 @@ pipeline {
          }
         stage('run') {
             steps {
-                sh '. venv/bin/activate && cd hubstaff4 && python manage.py runserver'
+                sh '. venv/bin/activate && python manage.py runserver'
                 }
          }
         
