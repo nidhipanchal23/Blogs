@@ -12,7 +12,7 @@ pipeline {
             steps {
                 sh 'python3 -m venv venv'
                 sh '. venv/bin/activate'
-                sh '/var/lib/jenkins/workspace/hubstaff3/venv/bin/pip install -r requirements.txt'
+                sh '. bin/pip install -r requirements.txt'
                 }
          }
         
