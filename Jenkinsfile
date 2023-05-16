@@ -7,20 +7,5 @@ pipeline {
                 sh "mvn clean -f Blogs"
             }
         }
-        stage('install') {
-            steps {
-                sh "mvn install -f Blogs"
-            }
-        }
-        stage('test') {
-            steps {
-                sh "mvn test -f Blogs"
-            }
-        }
-        stage('package') {
-            steps {
-                sh "mvn package -f Blogs"
-            }
-        }
     }
 }
