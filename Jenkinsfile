@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'python:3' } 
-    }
+    agent any
     stages {
         stage('git repo & clean') {
             steps {
