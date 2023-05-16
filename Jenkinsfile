@@ -3,7 +3,6 @@ pipeline {
     stages {
         stage('git repo & clean') {
             steps {
-               sh "rmdir  /s /q Blogs"
                 sh "git clone https://github.com/nidhipanchal23/Blogs.git"
                 sh "mvn clean -f Blogs"
             }
