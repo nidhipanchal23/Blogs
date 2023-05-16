@@ -10,11 +10,7 @@ pipeline {
         }
          stage('Install Dependencies') {
             steps {
-//                sh 'apt-get update && apt-get install -y python3-pip'
-                sh 'pip3 install pipenv'
-
-                // Install project dependencies
-                sh 'pipenv install --deploy --system'
+                sh 'pip install -r requirements.txt'
                 }
          }
     }
