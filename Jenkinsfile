@@ -1,5 +1,5 @@
 pipeline {
-    agent registration-login-api
+    agent any
     stages {
         stage('git repo & clean') {
             steps {
