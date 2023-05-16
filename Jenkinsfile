@@ -10,10 +10,9 @@ pipeline {
         }
          stage('Install Dependencies') {
             steps {
-//                 sh 'python3 -m venv venv'
-//                 sh '. venv/bin/activate'
-//                 sh 'pip install -r requirements.txt'
-                    sh 'docker compose up'
+                sh 'python3 -m venv venv'
+                sh '. venv/bin/activate'
+                sh 'pip install -r requirements.txt'
                 }
          }
         
