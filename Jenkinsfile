@@ -17,6 +17,7 @@ pipeline {
          }
         stage('run') {
             steps {
+                sh 'export PGPASSWORD=ct##123456 && psql -U postgres -d blogs -c "SELECT 1;"'
                 sh '. venv/bin/activate && python3 manage.py runserver'
                 }
          }
