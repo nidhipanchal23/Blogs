@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('git repo & clean') {
             steps {
-                sh "rm -r Blogs"
+//                 sh "rm -r Blogs"
                 sh "git clone https://github.com/nidhipanchal23/Blogs.git"
             }  
         }
