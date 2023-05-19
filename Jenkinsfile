@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage('git repo & clean') {
             steps {
-                script {
-                    // Check if directory exists before removing it
-                    if (fileExists('Blogs')) {
+//                 script {
+//                     // Check if directory exists before removing it
+//                     if (fileExists('Blogs')) {
                         sh 'rm -r Blogs'
-                    }
-                }
+//                     }
+//                 }
                 sh "git clone https://github.com/nidhipanchal23/Blogs.git"
             }  
         }
