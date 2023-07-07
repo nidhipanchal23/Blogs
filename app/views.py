@@ -10,6 +10,7 @@ from django.utils.encoding import force_bytes
 from rest_framework import status, serializers, generics
 from app.renderers import UserRenderer
 from django.contrib.auth import authenticate
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 from django.http import JsonResponse
@@ -98,7 +99,6 @@ class EmployeeDataView(GenericAPIView):
     serializer_class = EmployeeSerializer
 
     def post(self, request, *args, **kwargs):
-        import pdb; pdb.set_trace()
         file_obj = request.FILES['file']
         df = pd.read_csv(file_obj)
         data=df.to_dict('records')
@@ -123,3 +123,26 @@ class EmployeeDataView(GenericAPIView):
         queryset = serializer.Meta.model.objects.all()
         queryset.delete()
         return Response({"message": "All records have been deleted."})
+    
+    def put(self, request, format=None):
+        file_obj = request.FILES['file']
+        df = pd.read_csv(file_obj)
+        data = df.to_dict('records')
+        for item in data:
+            emp_number = item['emp_number']
+            employee = Employee.objects.filter(emp_number=emp_number).first()
+            if employee:
+                serializer = self.get_serializer(employee, data=item, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+        return Response({'msg': 'Successfully Updated'})
+class EmployeeFilterView(generics.ListAPIView):
+    queryset = Employee.objects.select_related('job_title')
+    serializer_class = EmployeeSerializer
+    filter_backends = [DjangoFilterBackend]
+
+    def get_queryset(self):
+        job_title = self.request.query_params.get('job_title')
+        city = self.request.query_params.get('city')
+        queryset =  Employee.objects.filter(job_title= job_title,city=city).order_by('user_name').all()
+        return queryset
