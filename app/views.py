@@ -11,7 +11,7 @@ from rest_framework import status, serializers, generics
 from app.renderers import UserRenderer
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.db.models import Q
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -135,7 +135,7 @@ class EmployeeDataView(GenericAPIView):
                 serializer = self.get_serializer(employee, data=item, partial=True)
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
-        return Response({'msg': 'Successfully Updated'})
+        return Response({'msg': 'Successfully Updated'}) 
 class EmployeeFilterView(generics.ListAPIView):
     queryset = Employee.objects.select_related('job_title')
     serializer_class = EmployeeSerializer
@@ -144,5 +144,15 @@ class EmployeeFilterView(generics.ListAPIView):
     def get_queryset(self):
         job_title = self.request.query_params.get('job_title')
         city = self.request.query_params.get('city')
-        queryset =  Employee.objects.filter(job_title= job_title,city=city).order_by('user_name').all()
+        # queryset =  Employee.objects.filter(job_title= job_title,city=city).order_by('user_name').all()
+        if job_title and city:
+            queryset = Employee.objects.filter(
+                Q(job_title__icontains=job_title) and Q(city__icontains=city)
+            )
+        elif job_title:
+            queryset = Employee.objects.filter(job_title__icontains=job_title)
+        elif city:
+            queryset = Employee.objects.filter(city__icontains=city)
+        else:
+            queryset = Employee.objects.all()
         return queryset
