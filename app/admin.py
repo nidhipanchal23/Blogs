@@ -1,6 +1,8 @@
 from django.contrib import admin
 from app.models import Employee, Task, User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin 
+from app.models import User,Blog
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 class UserModelAdmin(BaseUserAdmin):
@@ -32,3 +34,6 @@ class EmployeeAdmin(admin.ModelAdmin):
 admin.site.register(User, UserModelAdmin)
 admin.site.register(Employee,EmployeeAdmin)
 admin.site.register(Task)
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ("published_at", "updated_at", "created_at", "is_published", "publish_choices", "blog_content", "blog_image", "blog_title", "user")
